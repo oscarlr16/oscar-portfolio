@@ -51,7 +51,7 @@ footer{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);font:.9
 <a href="https://www.linkedin.com/in/olr16/" target="_blank" rel="noopener">LinkedIn</a>
 <a href="https://github.com/oscarlr16" target="_blank" rel="noopener">GitHub</a>
 </p>
-<p class="intro">Two projects I'm proud of, sent for the Flight Control Engineer role at Nova Sky Stories. One is a robotic espresso machine I helped take from prototype to mass production. The other is a nonlinear control study I built from the math up, in simulation, when the pandemic ruled out hardware. Both are about the same job: making a coupled physical system behave, on embedded hardware and in software-in-the-loop, which is also what holding a drone precisely in strong wind takes.</p>
+<p class="intro">Two projects I'm proud of, one is a robotic espresso machine I helped take from prototype to mass production. The other is a nonlinear control study I built from the math up, in simulation, when the pandemic ruled out hardware. Both are about the same job: making a coupled physical system behave, on embedded hardware and in software-in-the-loop, which is also what holding a drone precisely in strong wind takes.</p>
 </header>
 
 <section id="espresso">
@@ -66,13 +66,10 @@ footer{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);font:.9
 <p>At first glance, an espresso machine looks like a conventional appliance. The Meticulous Espresso is a highly constrained, multi-variable robotic system: the world's first robotic lever espresso machine. A custom embedded architecture on FreeRTOS manages up to 10 high-precision sensors in real time. Instead of a traditional pump, a high-torque motor and cascaded PID loops drive water at 9 bars while tracking fluid flow, 0.1 g weight variations and fast thermal changes within milliseconds. It is a coupled fluid-dynamics and thermal control problem solved on the fly.</p>
 <p>I worked hands-on with embedded C++ and FreeRTOS to bring the system from early prototypes to mass production. I took part in implementing a cascaded control architecture in which flow or speed tracking algorithms generate position setpoints for an internal motor controller. I also co-developed real-time algorithms that compensate for physical non-linearities, such as motor stiction and load cell creep, keeping the extraction metrics stable.</p>
 
-<h3>The bug that was not in the hardware</h3>
-<p>Our thermal PID loop became dangerously unstable because of intermittent temperature reading drops. I isolated the cause step by step: I probed the physical layer with an oscilloscope, verified stable voltages and swapped sensor batches. With hardware ruled out, I went into the FreeRTOS architecture and found a classic race condition: the ADC reading thread and the GPIO expander thread were colliding on the shared I2C bus. I added mutexes to arbitrate access to the bus, which eliminated the collisions and permanently stabilized the control loop.</p>
-
-<h3>Why it matters for flight control</h3>
+<h3>Why is this interesting?</h3>
 <p>Managing real-time concurrency in an RTOS, filtering noisy multi-sensor data and tuning cascaded loops around unpredictable hardware are the same problems as stabilizing a drone in turbulent wind. I'm used to bridging control theory and low-level hardware constraints, and I want to bring that hands-on C/C++ rigor to STM32 flight controllers.</p>
 
-<h3>Learn more about the product</h3>
+<h3>Learn more about the project</h3>
 <ul class="links">
 <li><a href="https://meticuloushome.com/" target="_blank" rel="noopener">Meticulous Home website</a></li>
 <li><a href="https://meticuloushome.com/pages/machine-sensor-data" target="_blank" rel="noopener">Machine sensor data</a></li>
@@ -94,11 +91,7 @@ footer{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);font:.9
 <p>In my last semester I wanted to go beyond standard PID and LQR and tackle a nonlinear system. The parallel architecture of a Delta robot caught my attention, but when COVID-19 hit, building a physical prototype was impossible. The challenge became modeling the physical constraints accurately in software, so I built a Software-in-the-Loop setup that connects a custom SolidWorks CAD design to MATLAB's Simscape Multibody.</p>
 <p>Out of curiosity, I built the math from scratch instead of relying on black-box tools. I derived the inverse kinematics with spatial analytical geometry to map 3D Cartesian trajectories to motor angles. Then I formulated the coupled dynamics by hand, computing kinetic and potential energy with the Euler-Lagrange formulation to understand how inertia and gravity shape the robot's motion.</p>
 
-<h3>When the theory met the simulation</h3>
-<p>The first run went badly: the robot collapsed and the links moved erratically. After debugging, I found that my parametric trajectory pushed the end-effector outside its workspace and into geometric singularities. I reworked the model, scaling the trajectory by 0.4 and shifting the Y-axis origin, so the motion was physically feasible before the controller had any chance to work.</p>
-<p>To control the system, I designed a joint-space PD controller with analytical gravity compensation in Simulink. I set the damping for critical response with K<sub>v</sub> = 2√K<sub>p</sub>, so the system settles quickly without oscillating. Watching the joint errors converge to near zero while the CAD model followed the trajectory confirmed the analytical work.</p>
-
-<h3>Why it matters for flight control</h3>
+<h3>Why is this interesting?</h3>
 <p>Stabilizing highly coupled dynamics and compensating for gravity analytically carries directly to flight control algorithms for UAVs. The same simulation-first approach, validating in software-in-the-loop before touching hardware, is how I would want to test flight code before it flies.</p>
 
 <ul class="links">
